@@ -8,3 +8,9 @@ spring:
             - Path=/**
           filters:
             -AddRequestHeader=X-G_HEADER, red
+
+eureka:
+  client:
+    enabled: true
+    service-url:
+      defaultZone: http://localhost:8112/eureka/
