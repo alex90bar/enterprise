@@ -1,0 +1,13 @@
+# фаза подготовки, конфигурация выполняется до application.yml
+spring:
+  cloud:
+    config:
+      enabled: true
+#      connection via discoveryService by id
+      discovery:
+        enabled: true
+        service-id: config
+        # в случае ошибки загрузки из централизованного сервиса настроек
+        # (отсутствие настроек, либо ответа сервиса) приложение тоже не стартует
+        # если false - то подгружает дефолтные настройки
+      fail-fast: true
