@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: test
+          uri: "http://localhost/api"
+          predicates:
+            - Path=/**
+          filters:
+            -AddRequestHeader=X-G_HEADER, red
