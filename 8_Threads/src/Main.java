@@ -17,6 +17,21 @@ public class Main {
     }
   }
 
+  public static class Writer2 extends Thread {
+    private Count count;
+
+    public Writer2(Count count, int number) {
+      this.setName("Writer" + number);
+      this.count = count;
+    }
+
+    @Override
+    public void run() {
+      IntStream.range(0, 1000000).forEach((i) -> count.inc2());
+    }
+  }
+
+
   public static class Reader extends Thread {
     private Count count;
 
@@ -36,8 +51,8 @@ public class Main {
     var counter = new Count();
     var w1 = new Writer(counter,1);
     var w2 = new Writer(counter,2);
-    var w3 = new Writer(counter,3);
-    var w4 = new Writer(counter,4);
+    var w3 = new Writer2(counter,3);
+    var w4 = new Writer2(counter,4);
 
     var r1 = new Reader(counter, 1);
 
