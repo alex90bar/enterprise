@@ -3,46 +3,61 @@ import java.util.stream.IntStream;
 
 public class Main {
 
-  public static class MyThread extends Thread{
-    private final String text;
+  public static class Writer extends Thread {
+    private Count count;
 
-    public MyThread(String text) {
-      this.setName(text);
-      this.text = text;
+    public Writer(Count count, int number) {
+      this.setName("Writer" + number);
+      this.count = count;
     }
 
     @Override
     public void run() {
-      IntStream.range(0, 10).forEach((i) -> System.out.println(text));
+      IntStream.range(0, 1000000).forEach((i) -> count.inc());
     }
   }
 
-  public static void main(String[] args) throws InterruptedException {
-    var t1 = new MyThread("T1");
-    var t2 = new MyThread("T2");
-    t1.setPriority(Thread.MAX_PRIORITY);
-    t1.setDaemon(true);
-    t2.setDaemon(true);
-    t1.start();
-    t2.start();
-    t1.join();
-    t2.join();
-    var ex = Executors.newFixedThreadPool(10);
-    ex.submit(() -> {System.out.println("Exe");});
+  public static class Reader extends Thread {
+    private Count count;
 
-    System.out.println("Main started");
+    public Reader(Count count, int number) {
+      this.setName("Reader" + number);
+      this.count = count;
+    }
+
+    @Override
+    public void run() {
+      IntStream.range(0, 1000000).forEach((i) -> System.out.println(count.getCount()));
+    }
   }
 
-//  public static void main(String[] args) {
-//    // var t1 = new MyThread("T1");  другой вариант создания потока
-//    var t1 = new Thread(() -> {
-//      Thread.yield();
-//      System.out.println("T1");
-//      throw new RuntimeException();  //В исключении прописывается имя потока
-//    } , "T1");
-//    t1.setDaemon(true);
-//    t1.start();
-//    System.out.println("Main started");
-//  }
+
+  public static void main(String[] args) throws InterruptedException {
+    var counter = new Count();
+    var w1 = new Writer(counter,1);
+    var w2 = new Writer(counter,2);
+    var w3 = new Writer(counter,3);
+    var w4 = new Writer(counter,4);
+
+    var r1 = new Reader(counter, 1);
+
+    w1.start();
+    w2.start();
+    w3.start();
+    w4.start();
+
+    r1.start();
+
+    w1.join();
+    w2.join();
+    w3.join();
+    w4.join();
+
+    r1.join();
+
+    System.out.println(counter.getCount());
+
+  }
+
 
 }
